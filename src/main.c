@@ -256,6 +256,7 @@ void update_data_in_struct(struct item_data *data, int index, char name[STRING_L
 
 int main(int argc, char *argv[]) {
 
+    return 0;
 }
 
 
