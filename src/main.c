@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define STRING_LENGTH 20
+#define FILE_LOCATION "data.dat"
 
 struct item_data {
     size_t name_size;
@@ -19,7 +21,7 @@ struct item_data {
 };
 
 int save_data(struct item_data *data) {
-    FILE *file = fopen("data.dat", "wb");
+    FILE *file = fopen(FILE_LOCATION, "wb");
 
     if (file == NULL) {
         perror("Error opening file to write");
@@ -105,7 +107,7 @@ int save_data(struct item_data *data) {
 }
 
 int read_data(struct item_data *data) {
-    FILE *file = fopen("data.dat", "rb");
+    FILE *file = fopen(FILE_LOCATION, "rb");
 
     if (file == NULL) {
         perror("Error opening file to read");
@@ -256,6 +258,34 @@ void update_data_in_struct(struct item_data *data, int index, char name[STRING_L
 
 int main(int argc, char *argv[]) {
 
+    struct item_data data;
+
+    // Check if data.dat exists previously, if so load into memory
+    if (access(FILE_LOCATION, F_OK) == 0) {
+        read_data(&data);
+    } else {
+        data.name_size = 0;
+        data.warehouse_size = 0;
+        data.location_size = 0;
+        data.quantity_size = 0;
+        data.price_size = 0;
+        data.name = NULL;
+        data.warehouse = NULL;
+        data.location = NULL;
+        data.quantity = NULL;
+        data.price = NULL;
+    }
+
+    // Run main program
+
+
+    // Save data, free memory and exit program
+    save_data(&data);
+    free(data.name);
+    free(data.warehouse);
+    free(data.location);
+    free(data.quantity);
+    free(data.price);
     return 0;
 }
 
