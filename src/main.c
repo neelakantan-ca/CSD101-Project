@@ -154,7 +154,7 @@ int read_data(struct item_data *data) {
     data->location = calloc(data->location_size, STRING_LENGTH);
     for (size_t i = 0; i < data->location_size; i++) {
         if (fread(data->location + i, sizeof(char) * STRING_LENGTH, 1, file) != 1) {
-            perror("Error reading location data"); fclose(file);
+            perror("Error reading location data");
             fclose(file);
             return 0;
         }
