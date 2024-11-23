@@ -54,6 +54,38 @@ input:
     }
 }
 
+void gui_update() {
+
+    printf("\n\t[UPDATE Entry]\n\n");
+
+    int index;
+
+    // Call a function to list all entries
+    
+    printf("\n\nEnter the index of the entry to update: ");
+    scanf("%d", &index);
+
+    index--;
+
+    // Write update function code
+}
+
+void gui_delete() {
+
+    printf("\n\t[DELETE Entry]\n\n");
+
+    int index;
+
+    // Call a function to list all entries
+    
+    printf("\n\nEnter the index of the entry to delete: ");
+    scanf("%d", &index);
+
+    index--;
+
+    // Call function to delete data
+}
+
 int main() {
 
     printf("\n");
@@ -75,12 +107,15 @@ int main() {
                 break;
             case CREATE:
                 printf("\n\t[SELECTED OPTION: CREATE]\n\n");
+                gui_create();
                 break;
             case UPDATE:
                 printf("\n\t[SELECTED OPTION: UPDATE]\n\n");
+                gui_update();
                 break;
             case DELETE:
                 printf("\n\t[SELECTED OPTION: DELETE]\n\n");
+                gui_delete();
                 break;
             case SAVE:
                 printf("\n\t[SELECTED OPTION: SAVE]\n\n");
