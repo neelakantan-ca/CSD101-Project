@@ -36,7 +36,6 @@ int save_data(struct item_data *data) {
         return 0;
     }
     for (size_t i = 0; i < data->name_size; i++) {
-        printf("Wrinting name: %p", data->name + i);
         if (fwrite(data->name + i, sizeof(char) * STRING_LENGTH, 1, file) != 1) {
             perror("Error writing name data to array");
             fclose(file);
@@ -130,7 +129,6 @@ int read_data(struct item_data *data) {
             fclose(file);
             return 0;
         }
-        printf("Reading name: %s", data->name[i]);
     }
 
     // Read warehouses
