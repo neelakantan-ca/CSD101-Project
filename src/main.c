@@ -121,10 +121,11 @@ int read_data(struct item_data *data) {
         fclose(file);
         return 0;
     }
-    data->name = calloc(data->name_size, STRING_LENGTH);
+    // TODO: Rewrite function to read array
+    data->name = calloc(data->name_size, sizeof(*data->name));
     for (size_t i = 0; i < data->name_size; i++) {
         if (fread(data->name + i, sizeof(char) * STRING_LENGTH, 1, file) != 1) {
-            perror("Error reading name data"); fclose(file);
+            perror("Error reading name data");
             fclose(file);
             return 0;
         }
@@ -139,7 +140,7 @@ int read_data(struct item_data *data) {
     data->warehouse = calloc(data->warehouse_size, STRING_LENGTH);
     for (size_t i = 0; i < data->warehouse_size; i++) {
         if (fread(data->warehouse + i, sizeof(char) * STRING_LENGTH, 1, file) != 1) {
-            perror("Error reading warehouse data"); fclose(file);
+            perror("Error reading warehouse data");
             fclose(file);
             return 0;
         }
@@ -202,6 +203,7 @@ int add_data_to_struct(struct item_data *data, char name[STRING_LENGTH], char wa
     data->quantity_size += 1;
     data->price_size += 1;
 
+    // BUG: If realloc fails, pointer to original data is lost. Rewrite using a temp pointer first.
     data->name = realloc(data->name, data->name_size * STRING_LENGTH * sizeof(char));
     data->warehouse = realloc(data->warehouse, data->warehouse_size * STRING_LENGTH * sizeof(char));
     data->location = realloc(data->location, data->location_size * STRING_LENGTH * sizeof(char));
@@ -217,6 +219,7 @@ int add_data_to_struct(struct item_data *data, char name[STRING_LENGTH], char wa
         return 0;
     }
 
+    // BUG: Use strncpy instead of strcpy to avoid buffer overflows
     strcpy(data->name[data->name_size - 1], name);
     strcpy(data->warehouse[data->warehouse_size - 1], warehouse);
     strcpy(data->location[data->location_size - 1], location);
@@ -227,6 +230,7 @@ int add_data_to_struct(struct item_data *data, char name[STRING_LENGTH], char wa
 
 void delete_data_from_struct(struct item_data *data, int index) {
     for (int i = index; i < (int) data->name_size - 1; i++) {
+    // BUG: Checek if index within bounds
         strcpy(data->name[i],  data->name[i + 1]);
     }
     for (int i = index; i < (int) data->warehouse_size - 1; i++) {
