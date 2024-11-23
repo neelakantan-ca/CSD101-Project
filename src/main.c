@@ -36,6 +36,7 @@ int save_data(struct item_data *data) {
         return 0;
     }
     for (size_t i = 0; i < data->name_size; i++) {
+        printf("Wrinting name: %p", data->name + i);
         if (fwrite(data->name + i, sizeof(char) * STRING_LENGTH, 1, file) != 1) {
             perror("Error writing name data to array");
             fclose(file);
@@ -129,6 +130,7 @@ int read_data(struct item_data *data) {
             fclose(file);
             return 0;
         }
+        printf("Reading name: %s", data->name[i]);
     }
 
     // Read warehouses
@@ -230,7 +232,7 @@ int add_data_to_struct(struct item_data *data, char name[STRING_LENGTH], char wa
 
 void delete_data_from_struct(struct item_data *data, int index) {
     for (int i = index; i < (int) data->name_size - 1; i++) {
-    // BUG: Checek if index within bounds
+        // BUG: Checek if index within bounds
         strcpy(data->name[i],  data->name[i + 1]);
     }
     for (int i = index; i < (int) data->warehouse_size - 1; i++) {
