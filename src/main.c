@@ -310,6 +310,8 @@ void list_struct(struct item_data *data) {
 
     int table_width = 5 * (STRING_LENGTH + 2);
 
+    char headers[6][10] = {"INDEX", "NAME", "WAREHOUSE", "LOCATION", "QUANTITY", "PRICE"};
+
     printf("|");
     // table_width + 5 to include length of columns and -3 to remove already printed columns
     for (int i = 0; i < (table_width + 3); i++) {
@@ -317,18 +319,10 @@ void list_struct(struct item_data *data) {
     }
     printf("|\n");
 
-    printf("|");
-    print_padded_string("INDEX");
-    printf("|");
-    print_padded_string("NAME");
-    printf("|");
-    print_padded_string("WAREHOUSE");
-    printf("|");
-    print_padded_string("LOCATION");
-    printf("|");
-    print_padded_string("QUANTITY");
-    printf("|");
-    print_padded_string("PRICE");
+    for (int i = 0; i < 6; i++) {
+        printf("|");
+        print_padded_string(headers[i]);
+    }
     printf("|\n");
     for (size_t i = 0; i < data->name_size; i++) {
         printf("|");
@@ -349,88 +343,148 @@ void list_struct(struct item_data *data) {
     for (int i = 0; i < (table_width + 3); i++) {
         printf("-");
     }
-    printf("|\n");
+    printf("|\n\n");
 }
 
-void gui_create() {
+void clearInputBuffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void gui_create(struct item_data *data) {
 
     printf("\n\t[CREATE Entry]\n\n");
 
     char name[STRING_LENGTH], warehouse[STRING_LENGTH], location[STRING_LENGTH];
     int quantity;
-    float price;
+    int price;
 
 input:
-
+    clearInputBuffer();
+    // BUG: Add input validation
     printf("Enter Item Name: ");
-    scanf("%s", name);  
+    fgets(name, STRING_LENGTH, stdin);
+    name[strcspn(name, "\n")] = '\0';
     printf("Enter Warehouse: ");
-    scanf("%s", warehouse);  
+    fgets(warehouse, STRING_LENGTH, stdin);
+    warehouse[strcspn(warehouse, "\n")] = '\0';
     printf("Enter Location: ");
-    scanf("%s", location);  
+    fgets(location, STRING_LENGTH, stdin);
+    location[strcspn(location, "\n")] = '\0';
     printf("Enter Item Quantity: ");
     scanf("%d", &quantity);
     printf("Price of Item: ");
-    scanf("%f", &price);
-    
-    printf("\n\t[CONFIRM DATA]\n");
+    scanf("%d", &price);
+
+    printf("\n\t[CONFIRM DATA]\n\n");
 
     printf("Name: %s\n", name);
     printf("Warehouse: %s\n", warehouse);
     printf("Location: %s\n", location);
     printf("Quantity: %d\n", quantity);
-    printf("Price: %f\n", price);
+    printf("Price: %d\n", price);
 
     int choice;
+    int result;
     printf("\nIs the data correct (1/0): ");
     scanf("%d", &choice);
 
+    printf("\n");
+
     switch (choice) {
         case ACCEPT:
-            // Call function to add data to struct
+            result = add_data_to_struct(data, name, warehouse, location, quantity, price);
+            if (result == 1) {
+                printf("Data appended successfully !!\n\n");
+            } else {
+                printf("Not able to add data\n\n");
+            }
             break;
         case REJECT:
             goto input;
     }
 }
 
-void gui_update() {
+void gui_update(struct item_data *data) {
 
     printf("\n\t[UPDATE Entry]\n\n");
 
     int index;
 
-    // Call a function to list all entries
-    
+    list_struct(data);
+
     printf("\n\nEnter the index of the entry to update: ");
     scanf("%d", &index);
 
     index--;
 
-    // Write update function code
+    char name[STRING_LENGTH], warehouse[STRING_LENGTH], location[STRING_LENGTH];
+    int quantity;
+    int price;
+
+update:
+    clearInputBuffer();
+    // BUG: Add input validation
+    printf("Enter Item Name: ");
+    fgets(name, STRING_LENGTH, stdin);
+    name[strcspn(name, "\n")] = '\0';
+    printf("Enter Warehouse: ");
+    fgets(warehouse, STRING_LENGTH, stdin);
+    warehouse[strcspn(warehouse, "\n")] = '\0';
+    printf("Enter Location: ");
+    fgets(location, STRING_LENGTH, stdin);
+    location[strcspn(location, "\n")] = '\0';
+    printf("Enter Item Quantity: ");
+    scanf("%d", &quantity);
+    printf("Price of Item: ");
+    scanf("%d", &price);
+
+    printf("\n\t[CONFIRM DATA]\n\n");
+
+    printf("Name: %s\n", name);
+    printf("Warehouse: %s\n", warehouse);
+    printf("Location: %s\n", location);
+    printf("Quantity: %d\n", quantity);
+    printf("Price: %d\n", price);
+
+    int choice;
+    printf("\nIs the data correct (1/0): ");
+    scanf("%d", &choice);
+
+    printf("\n");
+
+    switch (choice) {
+        case ACCEPT:
+            update_data_in_struct(data, index, name, warehouse, location, quantity, price);
+            break;
+        case REJECT:
+            goto update;
+    }
+
 }
 
-void gui_delete() {
+void gui_delete(struct item_data *data) {
 
     printf("\n\t[DELETE Entry]\n\n");
 
     int index;
 
-    // Call a function to list all entries
-    
+    list_struct(data);
+
     printf("\n\nEnter the index of the entry to delete: ");
     scanf("%d", &index);
 
     index--;
 
-    // Call function to delete data
+    delete_data_from_struct(data, index);
+
+    printf("Successfully Deleted!!!\n\n");
 }
 
-int main() {
+int main(void) {
 
     struct item_data data;
 
-    // Check if data.dat exists previously, if so load into memory
     if (access(FILE_LOCATION, F_OK) == 0) {
         read_data(&data);
     } else {
@@ -463,18 +517,19 @@ int main() {
         switch (choice) {
             case LIST:
                 printf("\n\t[SELECTED OPTION: LIST]\n\n");
+                list_struct(&data);
                 break;
             case CREATE:
                 printf("\n\t[SELECTED OPTION: CREATE]\n\n");
-                gui_create();
+                gui_create(&data);
                 break;
             case UPDATE:
                 printf("\n\t[SELECTED OPTION: UPDATE]\n\n");
-                gui_update();
+                gui_update(&data);
                 break;
             case DELETE:
                 printf("\n\t[SELECTED OPTION: DELETE]\n\n");
-                gui_delete();
+                gui_delete(&data);
                 break;
             case SAVE:
                 printf("\n\t[SELECTED OPTION: SAVE]\n\n");
