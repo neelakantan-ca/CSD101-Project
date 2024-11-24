@@ -7,6 +7,7 @@ final: main.o
 	@chmod +x ./output/main
 
 main.o: ./src/main.c 
+	@mkdir -p ./output/objects/
 	@$(COMPILER) $(CFLAGS) -c ./src/main.c -o ./output/objects/main.o
 
 clean:
