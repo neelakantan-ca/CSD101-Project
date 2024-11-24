@@ -7,6 +7,8 @@
 
 This project is to be submitted as Project Work for the CSD101 Course at [Shiv Nadar University](https://snu.edu.in/home/).
 
+All project code & revisions can be found on [Github](https://github.com/neelakantan-ca/CSD101-Project).
+
 # 🚀 Project Statement
 
 To use skills learned in the CSD101 Course and apply them to build a working application.
